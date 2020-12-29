@@ -1,0 +1,4 @@
+🐍
+import re
+with open('submission.tex') as f: print((re.search(r'% <SCPD_SUBMISSION_TAG>_entire_submission(.*?)% <SCPD_SUBMISSION_TAG>_entire_submission', f.read(), re.DOTALL)).group(1))
+🐍
