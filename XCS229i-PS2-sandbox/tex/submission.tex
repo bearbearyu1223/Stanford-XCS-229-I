@@ -1,0 +1,280 @@
+% This contents of this file will be inserted into the _Solutions version of the
+% output tex document.  Here's an example:
+
+% If assignment with subquestion (1.a) requires a written response, you will
+% find the following flag within this document: <SCPD_SUBMISSION_TAG>_1a
+% In this example, you would insert the LaTeX for your solution to (1.a) between
+% the <SCPD_SUBMISSION_TAG>_1a flags.  If you also constrain your answer between the
+% START_CODE_HERE and END_CODE_HERE flags, your LaTeX will be styled as a
+% solution within the final document.
+
+% Please do not use the '<SCPD_SUBMISSION_TAG>' character anywhere within your code.  As expected,
+% that will confuse the regular expressions we use to identify your solution.
+\def\assignmentnum{2 }
+\def\assignmenttitle{XCS229i Problem Set \assignmentnum}
+\input{macros}
+\begin{document}
+\pagestyle{myheadings} \markboth{}{\assignmenttitle}
+
+% <SCPD_SUBMISSION_TAG>_entire_submission
+
+This handout includes space for every question that requires a written response.
+Please feel free to use it to handwrite your solutions (legibly, please).  If
+you choose to typeset your solutions, the |README.md| for this assignment includes
+instructions to regenerate this handout with your typeset \LaTeX{} solutions.
+\ruleskip
+
+\LARGE
+1.a
+\normalsize
+
+% <SCPD_SUBMISSION_TAG>_1a
+\begin{answer}
+  Since $g'(z) = g(z)(1-g(z))$ and $h(x) = g(\theta^T x)$, it follows that $\partial h(x) / \partial \theta_k = h(x)(1 - h(x)) x_k$.
+
+  Letting $h_{\theta}(x^{(i)}) = g(\theta^T x^{(i)})
+  = 1/(1 + \exp(-\theta^T x^{(i)})$, we have\\
+
+  \begin{flalign*}
+    \frac{\partial\log h_{\theta}(x^{(i)})}{\partial\theta_k} &= \\
+    % ### START CODE HERE ###
+    % ### END CODE HERE ###
+    \frac{\partial\log(1 - h_{\theta}(x^{(i)}))}{\partial\theta_k} &= \\
+    % ### START CODE HERE ###
+    % ### END CODE HERE ###
+  \end{flalign*}
+
+  Substituting into our equation for $J(\theta)$, we have
+  %
+  \begin{flalign*}
+    \frac{\partial J(\theta)}{\partial\theta_k} &=\\
+    % ### START CODE HERE ###
+    % ### END CODE HERE ###
+  \end{flalign*}
+  
+  Consequently, the $(k, l)$ entry of the Hessian is given by
+  
+  \begin{flalign*}
+    H_{kl} = \frac{\partial^2 J(\theta)}{\partial\theta_k\partial\theta_l} &=\\
+    % ### START CODE HERE ###
+    % ### END CODE HERE ###
+  \end{flalign*}
+  
+  Using the fact that $X_{ij} = x_i x_j$ if and only if $X = xx^T$, we have
+  
+  \begin{flalign*}
+    H &= \\
+    % ### START CODE HERE ###
+    % ### END CODE HERE ###
+  \end{flalign*}
+
+  To prove that $H$ is positive semi-definite, show $z^T Hz \ge 0$ for all $z\in\Re^\di$.
+  
+  \begin{flalign*}
+    z^T H z &=\\
+    % ### START CODE HERE ###
+    % ### END CODE HERE ###
+  \end{flalign*}
+  
+  % ### START CODE HERE ###
+  % ### END CODE HERE ###
+\end{answer}
+% <SCPD_SUBMISSION_TAG>_1a
+\clearpage
+
+\LARGE
+1.c
+\normalsize
+
+% <SCPD_SUBMISSION_TAG>_1c
+\begin{answer}
+  For shorthand, we let $\mc{H} = \{\phi, \Sigma, \mu_{0}, \mu_1\}$ denote
+  the parameters for the problem.
+  Since the given formulae are conditioned on $y$, use Bayes rule to get:
+  \begin{align*}
+    p(y =1\vert  x ; \mc{H}) &= \frac {p(x\vert y=1; \mc{H}) p(y=1; \mc{H})} {p(x; \mc{H})}\\
+    & = \frac {p(x\vert y=1; \mc{H}) p(y=1; \mc{H})}
+      {p(x\vert y=1; \mc{H}) p(y=1; \mc{H}) + p(x\vert y={0}; \mc{H}) p(y={0};
+      \mc{H})}\\
+    &=\\
+    % ### START CODE HERE ###
+    % ### END CODE HERE ###
+  \end{align*}
+\end{answer}
+% <SCPD_SUBMISSION_TAG>_1c
+\clearpage
+
+\LARGE
+1.d
+\normalsize
+
+% <SCPD_SUBMISSION_TAG>_1d
+\begin{answer}
+  First, derive the expression for the log-likelihood of the training data:
+  \begin{flalign*}
+    \ell(\phi, \mu_{0}, \mu_1, \Sigma) &= \log \prod_{i=1}^\nexp p(x^{(i)} \vert  y^{(i)}; \mu_{0}, \mu_1, \Sigma) p(y^{(i)}; \phi)\\
+    &= \sum_{i=1}^{\nexp} \log p(x^{(i)} \vert  y^{(i)}; \mu_{0}, \mu_1, \Sigma) +
+    \sum_{i=1}^{n} \log p(y^{(i)}; \phi)\\
+    &=\\
+    % ### START CODE HERE ###
+    % ### END CODE HERE ###
+  \end{flalign*}
+
+  Now, the likelihood is maximized by setting the derivative (or gradient) with respect to each of the parameters to zero.\\
+
+  \textbf{For $\mathbf{\phi}$:}
+
+  \begin{flalign*}
+    \frac{\partial \ell}{\partial \phi}&=\\
+    % ### START CODE HERE ###
+    % ### END CODE HERE ###
+  \end{flalign*}
+
+  Setting this equal to zero and solving for $\phi$ gives the maximum
+  likelihood estimate.\\
+
+  \textbf{For $\mathbf{\mu_0}$:}
+
+  {\bf Hint:}  Remember that $\Sigma$ (and thus $\Sigma^{-1}$) is symmetric.
+
+  \begin{flalign*}
+    \nabla_{\mu_{0}}\ell &=\\
+    % ### START CODE HERE ###
+    % ### END CODE HERE ###
+  \end{flalign*}
+
+  Setting this gradient to zero gives the maximum likelihood estimate
+  for $\mu_{0}$.\\
+
+  \textbf{For $\mathbf{\mu_1}$:}
+
+  {\bf Hint:}  Remember that $\Sigma$ (and thus $\Sigma^{-1}$) is symmetric.
+
+  \begin{flalign*}
+    \nabla_{\mu_{1}}\ell &=\\
+    % ### START CODE HERE ###
+    % ### END CODE HERE ###
+  \end{flalign*}
+
+  Setting this gradient to zero gives the maximum likelihood estimate
+  for $\mu_{1}$.\\
+
+  For $\Sigma$, we find the gradient with respect to $S = \Sigma^{-1}$ rather than $\Sigma$ just to simplify the derivation (note that $\vert S\vert  = \frac{1}{\vert \Sigma\vert }$).
+  You should convince yourself that the maximum likelihood estimate $S_\nexp$ found in this way would correspond to the actual maximum likelihood estimate $\Sigma_\nexp$ as $S_\nexp^{-1} = \Sigma_\nexp$.
+
+  {\bf Hint:}  You may need the following identities: 
+  \begin{equation*}
+    \nabla_S \vert S\vert  = \vert S\vert  (S^{-1})^T
+  \end{equation*}
+  \begin{equation*}
+    \nabla_S b_i^T S b_i = \nabla_S tr \left( b_i^T S b_i \right) =
+    \nabla_S tr \left( S b_i b_i^T \right) = b_i b_i^T
+  \end{equation*}
+
+  \begin{flalign*}
+    \nabla_S\ell &=\\
+    % ### START CODE HERE ###
+  % ### END CODE HERE ###
+  \end{flalign*}
+
+  Next, substitute $\Sigma = S^{-1}$.  Setting this gradient to zero gives the required maximum likelihood estimate for $\Sigma$.\\
+\end{answer}
+% <SCPD_SUBMISSION_TAG>_1d
+\clearpage
+
+\LARGE
+1.f
+\normalsize
+
+% <SCPD_SUBMISSION_TAG>_1f
+\begin{answer}
+  % ### START CODE HERE ###
+  % ### END CODE HERE ###
+\end{answer}
+% <SCPD_SUBMISSION_TAG>_1f
+\clearpage
+
+\LARGE
+1.g
+\normalsize
+
+% <SCPD_SUBMISSION_TAG>_1g
+\begin{answer}
+  % ### START CODE HERE ###
+  % ### END CODE HERE ###
+\end{answer}
+% <SCPD_SUBMISSION_TAG>_1g
+\clearpage
+
+\LARGE
+1.h
+\normalsize
+
+% <SCPD_SUBMISSION_TAG>_1h
+\begin{answer}
+  % ### START CODE HERE ###
+  % ### END CODE HERE ###
+\end{answer}
+% <SCPD_SUBMISSION_TAG>_1h
+\clearpage
+
+\LARGE
+2.a
+\normalsize
+
+% <SCPD_SUBMISSION_TAG>_2a
+\begin{answer}
+  % ### START CODE HERE ###
+  % ### END CODE HERE ###
+\end{answer}
+% <SCPD_SUBMISSION_TAG>_2a
+\clearpage
+
+\LARGE
+2.b
+\normalsize
+
+% <SCPD_SUBMISSION_TAG>_2b
+\begin{answer}
+  % ### START CODE HERE ###
+  % ### END CODE HERE ###
+\end{answer}
+% <SCPD_SUBMISSION_TAG>_2b
+\clearpage
+
+\LARGE
+2.c
+\normalsize
+
+% <SCPD_SUBMISSION_TAG>_2c
+\begin{answer}
+  The log-likelihood of an example $(x^{(i)}, y^{(i)})$ is defined as
+  $\ell(\theta) = \log p(y^{(i)} \vert  x^{(i)}; \theta)$. To derive the stochastic
+  gradient ascent rule, use the results in part (a) and the standard GLM
+  assumption that $\eta = \theta^Tx$.
+  \begin{flalign*}
+    \frac{\partial \ell(\theta)}{\partial \theta_j}
+    &= \frac{\partial \log p(y^{(i)} \vert  x^{(i)}; \theta)}{\partial \theta_j}\\
+    &= \frac {\partial \log \left({\frac{1}{y^{(i)}!} \exp(\eta^T y^{(i)} -
+    e^\eta)}\right)} {\partial \theta_j}\\
+    &=\\
+    % ### START CODE HERE ###
+    % ### END CODE HERE ###
+  \end{flalign*}
+
+  Thus the stochastic gradient ascent update rule should be:
+
+  \begin{equation*}
+  \theta_j := \theta_j + \alpha \frac{\partial \ell(\theta)}{\partial \theta_j},
+  \end{equation*}
+
+  which reduces here to:
+  % ### START CODE HERE ###
+  % ### END CODE HERE ###
+\end{answer}
+% <SCPD_SUBMISSION_TAG>_2c
+\clearpage
+
+% <SCPD_SUBMISSION_TAG>_entire_submission
+
+\end{document}

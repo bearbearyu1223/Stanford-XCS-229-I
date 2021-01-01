@@ -1,0 +1,16 @@
+@default_files = ("main.tex");   # Set the root tex file for the output document
+$pdf_mode = 1;                   # tex -> pdf
+$auto_rc_use = 1;                # Do not read further latexmkrc files
+$out_dir = "..";                 # Create output files in the assignment directory (assignment/)
+$warnings_as_errors = 1;         # Elevates warnings to errors.  Enforces cleaner code.
+$pdflatex = "pdflatex -halt-on-error -interaction=batchmode %O %S";
+                                 # Forces latexmk to stop and quit if it encounters an error
+$silent = 1;                     # For quieter output on the terminal.
+$cleanup_includes_cusdep_generated = 1;
+                                 # Remove *.tex files that have a corresponding *.ptex
+$max_repeat = 100;
+add_cus_dep('pytex','tex',0,'py2tex');
+sub py2tex {
+  rdb_ensure_file($rule, "../src/points.json");
+  system("python py2tex.py \"$_[0].pytex\" \"$_[0].tex\"");
+}
