@@ -66,13 +66,8 @@ class PoissonRegression:
             self.theta = np.zeros(x.shape[1])
 
         for _ in range(self.max_iter):
-            theta_prev = self.theta
-            log_likelihood_derivative = np.zeros(x.shape[1])
-
-            for x_i, y_i in zip(x, y):
-                theta_dot_x_i = np.dot(self.theta.transpose(), x_i)
-                log_likelihood_derivative = log_likelihood_derivative + (y_i - np.exp(theta_dot_x_i)) * x_i
-
+            theta_prev = self.theta.copy()
+            log_likelihood_derivative = (y - np.exp(x.dot(self.theta))).dot(x)
             self.theta = self.theta + self.step_size * log_likelihood_derivative
             diff = np.linalg.norm((self.theta - theta_prev), ord=1)
             if diff < self.eps:

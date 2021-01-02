@@ -68,13 +68,13 @@ class GDA:
         n_examples = x.shape[0]
         dim = x.shape[1]
         if self.theta is None:
-            self.theta = np.zeros(dim + 1)
+            self.theta = np.zeros(dim, dtype=float)
         phi = np.true_divide(len(y[y == 1.0]), n_examples)
         mu_0 = np.true_divide(np.sum(x[y == 0.0], axis=0), len(y[y == 0.0]))
         mu_1 = np.true_divide(np.sum(x[y == 1.0], axis=0), len(y[y == 1.0]))
         sigma = np.true_divide((x[y == 1.0] - mu_1).transpose().dot(x[y == 1.0] - mu_1) \
                                + (x[y == 0.0] - mu_0).transpose().dot((x[y == 0.0] - mu_0)), len(x))
-        sigma_inv = np.linalg.pinv(sigma)
+        sigma_inv = np.linalg.inv(sigma)
         theta_0 = 0.5*(np.dot(mu_0, sigma_inv).dot(mu_0) - np.dot(mu_1, sigma_inv).dot(mu_1)) - np.log((1.0 -phi)/phi)
         theta = -np.dot((mu_0 - mu_1).transpose(), sigma_inv)
         self.theta = np.append(theta_0, theta)
@@ -174,7 +174,7 @@ class LogisticRegression:
                                             + np.true_divide((y_i - g_theta_x_i) * x_i, x.shape[0])
             hessian = np.dot(np.dot(x.transpose(), np.true_divide(np.diag(diagonal), x.shape[0])), x)
             hessian_inverse = np.linalg.pinv(hessian)
-            self.theta = self.theta + self.step_size * np.dot(hessian_inverse, log_likelihood_derivative)
+            self.theta = self.theta + np.dot(hessian_inverse, log_likelihood_derivative)
             diff = np.linalg.norm((self.theta - theta_prev), ord=1)
 
             if diff < self.eps:
