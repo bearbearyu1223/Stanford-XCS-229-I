@@ -1,0 +1,17 @@
+🐍
+import json
+
+# Load the points.json for that assignment
+with open(f'../points.json', 'r') as f:
+  points = json.load(f)
+
+has_written = len([q for q in points.values() if q['is_written']]) > 0
+has_coding = len([q for q in points.values() if not q['is_written']]) > 0
+
+if has_written or has_coding:
+  print('{\\bf Submission Instructions}\n\n')
+if has_written:
+  with open('00-instructions/02-0-written-submission.tex', 'r') as f: print(f.read())
+if has_coding:
+  with open('00-instructions/02-1-coding-submission.tex', 'r') as f: print(f.read())
+🐍

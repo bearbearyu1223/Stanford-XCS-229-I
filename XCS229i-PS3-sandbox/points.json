@@ -1,0 +1,10 @@
+{
+  "1a" : {"points":5, "question_id":"1a", "is_written":true, "is_extra_credit":false, "no_label":false},
+  "1b" : {"points":5, "question_id":"1b", "is_written":true, "is_extra_credit":false, "no_label":false},
+  "1c" : {"points":5, "question_id":"1c", "is_written":true, "is_extra_credit":false, "no_label":false},
+  "1d" : {"points":5, "question_id":"1d", "is_written":true, "is_extra_credit":false, "no_label":false},
+  "1e" : {"points":5, "question_id":"1e", "is_written":true, "is_extra_credit":false, "no_label":false},
+  "1f" : {"points":5, "question_id":"1f", "is_written":true, "is_extra_credit":false, "no_label":false},
+  "1g" : {"points":5, "question_id":"1g", "is_written":true, "is_extra_credit":false, "no_label":false},
+  "1h" : {"points":5, "question_id":"1h", "is_written":true, "is_extra_credit":false, "no_label":false}
+}

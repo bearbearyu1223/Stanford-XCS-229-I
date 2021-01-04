@@ -1,0 +1,54 @@
+🐍
+import json
+
+# Load the points.json for that assignment
+with open(f'../points.json', 'r') as f:
+  points = json.load(f)
+
+has_coding = len([q for q in points.values() if not q['is_written']]) > 0
+
+if has_coding:
+  print(R'''{\bf Writing Code and Running the Autograder}
+
+All your code should be entered into |src/submission.py|. When editing |src/submission.py|, please only make changes between the lines containing
+|### START_CODE_HERE ###| and |### END_CODE_HERE ###|. Do not make changes to
+% The astute reader will notice that there are underscores in the
+% START_CODE_HERE and END_CODE_HERE flags, while the source files actually
+% contain spaces.  This is because our solution sanitization script will
+% otherwise recognize this tag and attempt to delete it.  The underscores are a
+% simple way to prevent this.
+files other than |src/submission.py|.
+
+The unit tests in |src/grader.py| (the autograder) will be used to verify a correct submission.
+Run the autograder locally using the following terminal command within the
+|src/| subdirectory:
+\begin{lstlisting}
+$ python grader.py
+\end{lstlisting}
+
+There are two types of unit tests used by the autograder:
+\begin{itemize}
+  \item |basic|:  These unit tests will verify only that your code runs without
+  errors on obvious test cases.  These tests so not require the instructor solution code and can therefore be run on your local computer.
+  \item |hidden|: These unit tests will verify that your code produces correct
+  results on complex inputs and tricky corner cases.  Since these tests require
+  the instructor solution code to verify results, only the setup and inputs are provided.
+  When you run the autograder locally, these test cases will run, but the
+  results will not be verified by the autograder.  When your run the autograder
+  online, these tests will run and you will receive feedback on any errors that might occur.
+\end{itemize}
+
+For debugging purposes, you can run a single unit test locally.  For example, you
+can run the test case |3a-0-basic| using the following terminal command within
+the |src/| subdirectory:
+\begin{lstlisting}
+$ python grader.py 3a-0-basic
+\end{lstlisting}
+
+Before beginning this course, please walk through the
+\href{https://github.com/scpd-proed/General_Handouts/blob/master/Anaconda_Setup.pdf}{Anaconda
+Setup for XCS Courses} to familiarize yourself with
+the coding environment.  Use the env defined in |src/environment.yml|
+to run your code.  This is the same environment used by the online autograder.''')
+🐍
+
