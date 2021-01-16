@@ -1,0 +1,22 @@
+\item \points{1b}
+In this question you are going to implement a Naive Bayes classifier for spam
+classification with {\bf multinomial event model} and Laplace smoothing.
+
+Code your implementation by completing the |fit_naive_bayes_model()|
+and |predict_from_naive_bayes_model()| functions in
+|src-spam/submission.py|.
+
+Now the functions in |src-spam/submission.py| should be able to train a Naive Bayes model.  Use autograder test case |1b-1-basic| to
+compute your prediction accuracy and then save your resulting predictions
+to\\|spam_naive_bayes_predictions_(soln)|.
+
+
+{\bf Remark.} If you implement Naive Bayes the straightforward way, you will find
+that the computed $p(x\vert y) = \prod_i p(x_i \vert  y)$ often equals zero.  This is
+because $p(x\vert y)$, which is the product of many numbers less than one, is a very
+small  number. The standard computer representation of real numbers cannot
+handle numbers that are too small, and instead rounds them off to zero.  (This
+is called  ``underflow.'')  You'll have to find a way to compute Naive Bayes'
+predicted  class labels without explicitly representing very small numbers such
+as $p(x\vert y)$.
+[\textbf{Hint:} Think about using logarithms.]

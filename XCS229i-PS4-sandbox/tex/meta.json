@@ -1,0 +1,7 @@
+{
+  "show_guidelines": true,
+  "show_submission_instructions":true,
+  "show_autograder_instructions":true,
+  "show_honor_code": true,
+  "preamble":""
+}

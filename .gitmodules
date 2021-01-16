@@ -13,3 +13,6 @@
 [submodule "XCS229i-PS3"]
 	path = XCS229i-PS3
 	url = https://github.com/scpd-proed/XCS229i-PS3.git
+[submodule "XCS229i-PS4"]
+	path = XCS229i-PS4
+	url = https://github.com/scpd-proed/XCS229i-PS4.git

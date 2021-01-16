@@ -1,0 +1,15 @@
+\item \points{2c}
+All this while the test cases have avoided the test data completely. Now that
+you have convinced yourself that the model is working as expected (i.e, the
+observations you made in the previous part matches what you learnt in class
+about regularization), it is finally time to measure the model performance on
+the test set. Once we measure the test set performance, we report it (whatever
+value it may be), and NOT go back and refine the model any further.
+
+Autograder test case |2c-1-basic| will train your model and then evaluate its performance on the test data for both the regularized and non-regularized training strategies.  Before running this test case, edit line 362 of |src-mnist/grader.py| to state |skip = False| (model plotting/training is disabled by default to run the auotgrader faster).
+
+You should have accuracy close to 0.92870 without regularization, and 0.96760 with regularization.
+Note: these accuracies assume you implement the code with the matrix dimensions as specified in
+the comments, which is not the same way as specified in your code. Even if you do not have precisely these
+numbers, you should observe good accuracy and better test accuracy with regularization.
+
