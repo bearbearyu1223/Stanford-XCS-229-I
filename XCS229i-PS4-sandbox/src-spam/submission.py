@@ -29,6 +29,8 @@ def get_words(message):
     """
 
     # *** START CODE HERE ***
+    assert isinstance(message, str), 'Type Error: input message should be string!'
+    return [word.lower() for word in message.split()]
     # *** END CODE HERE ***
 
 
@@ -49,6 +51,19 @@ def create_dictionary(messages):
     """
 
     # *** START CODE HERE ***
+    assert isinstance(messages, list) and all(isinstance(x,str) for x in messages), 'Type Error: input messages should be a list of string!'
+    word_dictionary = {}
+    corpus = []
+    for msg in messages:
+        words = get_words(message=msg)
+        corpus = corpus + list(set(words))
+    corpus_counter = collections.Counter(corpus)
+    index = 0
+    for word, count in corpus_counter.items():
+        if count >= 5:
+            word_dictionary[word] = index
+            index = index + 1
+    return word_dictionary
     # *** END CODE HERE ***
 
 
@@ -73,6 +88,18 @@ def transform_text(messages, word_dictionary):
         j-th vocabulary word in the i-th message.
     """
     # *** START CODE HERE ***
+    assert isinstance(messages, list) and all(isinstance(x, str) for x in messages), 'Type Error: input messages should be a list of strings!'
+    assert isinstance(word_dictionary, dict), 'Type Error: input word_dictionary should be a dict!'
+    rtn = np.zeros(shape=(len(messages), len(word_dictionary)))
+
+    for row, msg in enumerate(messages):
+        all_words = get_words(message=msg)
+        unique_words = set(all_words)
+        for word in unique_words:
+            if word in word_dictionary:
+                col = word_dictionary[word]
+                rtn[row][col] = all_words.count(word)
+    return rtn
     # *** END CODE HERE ***
 
 
@@ -93,6 +120,26 @@ def fit_naive_bayes_model(matrix, labels):
     """
 
     # *** START CODE HERE ***
+    sample_size = matrix.shape[0]
+    vocabulary_size = matrix.shape[1]
+
+    is_spam_mask = labels == 1
+    not_spam_mask = labels == 0
+    is_spam_matrix = matrix[is_spam_mask,:]
+    not_spam_matrix = matrix[not_spam_mask, :]
+
+    phi_j_yeq1 = (np.sum(is_spam_matrix, axis=0) + 1) / (np.sum(is_spam_matrix) + vocabulary_size)
+    phi_j_yeq0 = (np.sum(not_spam_matrix, axis=0) + 1) / (np.sum(not_spam_matrix) + vocabulary_size)
+
+    phi_yeq1 = np.sum(labels==1) / sample_size
+    phi_yeq0 = np.sum(labels==0) / sample_size
+
+    model = dict()
+    model['phi_yeq0'] = phi_yeq0
+    model['phi_yeq1'] = phi_yeq1
+    model['phi_j_yeq0'] = phi_j_yeq0
+    model['phi_j_yeq1'] = phi_j_yeq1
+    return model
     # *** END CODE HERE ***
 
 
@@ -109,6 +156,17 @@ def predict_from_naive_bayes_model(model, matrix):
     Returns: A numpy array containg the predictions from the model
     """
     # *** START CODE HERE ***
+    np.seterr(divide='ignore')
+    p_not_spam = np.exp(np.log(model['phi_yeq0'] * np.prod(np.power(model['phi_j_yeq0'], matrix), axis=1)))
+    p_is_spam = np.exp(np.log(model['phi_yeq1'] * np.prod(np.power(model['phi_j_yeq1'], matrix), axis=1)))
+
+    prediction = []
+    for p1, p2 in zip(p_is_spam, p_not_spam):
+        if p1 >= p2:
+            prediction.append(1)
+        else:
+            prediction.append(0)
+    return np.array(prediction)
     # *** END CODE HERE ***
 
 
@@ -125,6 +183,15 @@ def get_top_five_naive_bayes_words(model, dictionary):
     Returns: A list of the top five most indicative words in sorted order with the most indicative first
     """
     # *** START CODE HERE ***
+    indicative_metric = np.log(np.divide(model['phi_j_yeq1'], model['phi_j_yeq0']))
+    ind = indicative_metric.argsort()[-5:][::-1]
+    rtn = []
+    for i in np.nditer(ind):
+        for k, v in dictionary.items():
+            if v == i:
+                rtn.append(k)
+                break
+    return rtn
     # *** END CODE HERE ***
 
 
@@ -136,7 +203,7 @@ def compute_best_svm_radius(train_matrix, train_labels, val_matrix, val_labels, 
 
     Args:
         train_matrix: The word counts for the training data
-        train_labels: The spma or not spam labels for the training data
+        train_labels: The spam or not spam labels for the training data
         val_matrix: The word counts for the validation data
         val_labels: The spam or not spam labels for the validation data
         radius_to_consider: The radius values to consider
@@ -145,8 +212,16 @@ def compute_best_svm_radius(train_matrix, train_labels, val_matrix, val_labels, 
         The best radius which maximizes SVM accuracy.
     """
     # *** START CODE HERE ***
+    best_radius = 0.0
+    best_accuracy = 0.0
+    for r in radius_to_consider:
+        pred_labels = svm.train_and_predict_svm(train_matrix=train_matrix, train_labels=train_labels, test_matrix=val_matrix, radius=r)
+        accuracy = np.sum(pred_labels == val_labels)/len(val_labels)
+        if accuracy >= best_accuracy:
+            best_accuracy = accuracy
+            best_radius = r
+    return best_radius
     # *** END CODE HERE ***
-
 
 def main():
     train_messages, train_labels = util.load_spam_dataset('spam_train.tsv')

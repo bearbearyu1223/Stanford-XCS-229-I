@@ -185,7 +185,7 @@ class Test_2aii(GradedTestCase):
     """2aii-6-basic: Train the model and plot the results (not regularized)"""
     # Change this to "skip = False" to train the model.
     # This is turned off by default to make the autograder faster.
-    skip = True
+    skip = False
     if not skip:
       submission.main(train_baseline=True, train_regularized=False)
     self.assertTrue(True)
@@ -283,7 +283,7 @@ class Test_2b(GradedTestCase):
     """2b-2-basic: Train the model and plot the results (regularized)"""
     # Change this to "skip = False" to train the model.
     # This is turned off by default to make the autograder faster.
-    skip = True
+    skip = False
     if not skip:
       submission.main(train_baseline=False, train_regularized=True)
     self.assertTrue(True)
@@ -359,7 +359,7 @@ class Test_2c(GradedTestCase):
     """2c-1-basic: Train the model and plot the results (both regularized and not regularized), comparing with test set."""
     # Change this to "skip = False" to train the model.
     # This is turned off by default to make the autograder faster.
-    skip = True
+    skip = False
     if not skip:
       submission.main(train_baseline=True, train_regularized=True, test_set = True)
     self.assertTrue(True)
