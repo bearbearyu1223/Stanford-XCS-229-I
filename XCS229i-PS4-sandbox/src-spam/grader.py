@@ -59,7 +59,6 @@ class Test_1a(GradedTestCase):
 
     student_result = submission.create_dictionary(messages=self.train_messages)
     solution_result = solution_create_dictionary(messages=self.train_messages)
-
     self.assertTrue(len(student_result) == len(solution_result))
 
   @graded()
@@ -150,7 +149,7 @@ class Test_1c(GradedTestCase):
     matches = list(set(top_5_words_student) & set(top_5_words_solution))
     print("Top 5 words : {}".format(" , ".join(top_5_words_student)))
     print("Top words that match the solution : {}".format(" , ".join(matches)))
-    
+
     self.assertTrue(len(matches) == 5)
 
   @graded()
@@ -182,7 +181,7 @@ class Test_1d(GradedTestCase):
     val_matrix = solution_transform_text(self.val_messages, dictionary)
 
     optimal_radius = submission.compute_best_svm_radius(train_matrix, self.train_labels, val_matrix, self.val_labels,
-                                                     [0.01, 0.1, 1, 10])
+                                                        [0.01, 0.1, 1, 10])
 
     self.assertTrue(optimal_radius == 0.1)
 
@@ -198,7 +197,7 @@ class Test_1d(GradedTestCase):
     test_matrix = solution_transform_text(self.test_messages, dictionary)
 
     optimal_radius = submission.compute_best_svm_radius(train_matrix, self.train_labels, val_matrix, self.val_labels,
-                                                   [0.01, 0.1, 1, 10])
+                                                        [0.01, 0.1, 1, 10])
     svm_predictions = svm.train_and_predict_svm(train_matrix, self.train_labels, test_matrix, optimal_radius)
     svm_accuracy = np.mean(svm_predictions == self.test_labels)
 

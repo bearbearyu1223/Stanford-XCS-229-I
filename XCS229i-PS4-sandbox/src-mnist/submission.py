@@ -78,7 +78,6 @@ def get_initial_params(input_size, num_hidden, num_output):
     Returns:
         A dict mapping parameter names to numpy arrays
     """
-
     # *** START CODE HERE ***
     params = dict()
     params['W1'] = np.random.normal(loc=0.0, scale=1.0, size=(input_size, num_hidden))
@@ -220,7 +219,6 @@ def gradient_descent_epoch(train_data, train_labels, learning_rate, batch_size, 
 
     Returns: This function returns nothing.
     """
-
     # *** START CODE HERE ***
     iteration = int(train_data.shape[0]/batch_size)
     for i in range(iteration):
