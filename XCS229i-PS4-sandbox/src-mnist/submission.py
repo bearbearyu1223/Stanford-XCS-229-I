@@ -21,7 +21,8 @@ def softmax(x):
         A 2d numpy float array containing the softmax results of shape batch_size x number_of_classes
     """
     # *** START CODE HERE ***
-    e_x = np.exp(x - (np.max(x, axis=1)).reshape(x.shape[0], 1))
+    # e_x = np.exp(x - (np.max(x, axis=0)).reshape(x.shape[0], 1))
+    e_x = np.exp(x - (np.max(x)))
     p = e_x / np.sum(e_x, axis=1, keepdims=True)
     assert (p.shape[0] == x.shape[0]) and (p.shape[1] == x.shape[1])
     return p
@@ -46,7 +47,7 @@ def sigmoid(x):
         return exp / (exp + 1)
 
     positive = x >= 0
-    negative = ~positive
+    negative = x < 0
     result = np.empty_like(x)
     result[positive] = _positive_sigmoid(_x=x[positive])
     result[negative] = _negative_sigmoid(_x=x[negative])
@@ -106,9 +107,9 @@ def forward_prop(data, labels, params):
             3. The average loss for these data elements
     """
     # *** START CODE HERE ***
-    a_1 = np.dot(data, params['W1']) + params['b1']
+    a_1 = np.matmul(data, params['W1']) + params['b1']
     z_1 = sigmoid(a_1)
-    a_2 = np.dot(z_1, params['W2']) + params['b2']
+    a_2 = np.matmul(z_1, params['W2']) + params['b2']
     output = softmax(a_2)
 
     avg_loss = 0.0
@@ -143,19 +144,21 @@ def backward_prop(data, labels, params, forward_prop_func):
             W1, W2, b1, and b2
     """
     # *** START CODE HERE ***
+    # see reference at : https://levelup.gitconnected.com/killer-combo-softmax-and-cross-entropy-5907442f60ba
     z_1, output, _ = forward_prop_func(data, labels, params)
-    sample_size = labels.shape[0]
+    sample_size = float(data.shape[0])
     gradients = dict()
+    dscores = np.true_divide((output - labels), sample_size)
 
-    dscores = (output - labels)/sample_size
+    gradients['W2'] = np.matmul(z_1.transpose(), dscores)
+    gradients['b2'] = np.sum(dscores, axis=0)
 
-    gradients['W2'] = np.dot(z_1.T, dscores)
-    gradients['b2'] = np.sum(dscores, axis=0, keepdims=True)
-
-    dhidden = np.dot(dscores, params['W2'].T)
+    dhidden = np.matmul(dscores, params['W2'].transpose())
     dhidden = np.multiply(dhidden, z_1*(1.0 - z_1))
-    gradients['W1'] = np.dot(data.T, dhidden)
-    gradients['b1'] = np.sum(dhidden, axis=0, keepdims=True)
+
+    gradients['W1'] = np.matmul(data.transpose(), dhidden)
+    gradients['b1'] = np.sum(dhidden, axis=0)
+
     return gradients
     # *** END CODE HERE ***
 
@@ -182,22 +185,18 @@ def backward_prop_regularized(data, labels, params, forward_prop_func, reg):
     """
     # *** START CODE HERE ***
     z_1, output, _ = forward_prop_func(data, labels, params)
-    gradients = {}
-
-    dscores = output - labels
-    dscores = np.true_divide(dscores, float(labels.shape[0]))
-    dCE = dscores
-
-    gradients['W2'] = np.dot(z_1.T, dCE)
+    gradients = dict()
+    dscores = np.true_divide((output - labels), float(data.shape[0]))
+    gradients['W2'] = np.matmul(z_1.transpose(), dscores)
     gradients['W2'] = gradients['W2'] + 2.0*float(reg)*params['W2']
-    gradients['b2'] = np.sum(dCE, axis=0, keepdims=True)
+    gradients['b2'] = np.sum(dscores, axis=0)
 
-    dhidden = np.dot(dCE, params['W2'].T)
+    dhidden = np.matmul(dscores, params['W2'].transpose())
     dhidden = np.multiply(dhidden, z_1*(1.0 - z_1))
 
-    gradients['W1'] = np.dot(data.T, dhidden)
+    gradients['W1'] = np.matmul(data.transpose(), dhidden)
     gradients['W1'] = gradients['W1'] + 2.0*float(reg)*params['W1']
-    gradients['b1'] = np.sum(dhidden, axis=0, keepdims=True)
+    gradients['b1'] = np.sum(dhidden, axis=0)
     return gradients
     # *** END CODE HERE ***
 
@@ -223,10 +222,10 @@ def gradient_descent_epoch(train_data, train_labels, learning_rate, batch_size, 
     iteration = int(train_data.shape[0]/batch_size)
     for i in range(iteration):
         gradients = backward_prop_func(train_data[batch_size*i:batch_size*(i+1)], train_labels[batch_size*i:batch_size*(i+1)], params, forward_prop_func)
-        params['W1'] = params['W1'] - float(learning_rate)*gradients['W1'].reshape(params['W1'].shape)
-        params['b1'] = params['b1'] - float(learning_rate)*gradients['b1'].reshape(params['b1'].shape)
-        params['W2'] = params['W2'] - float(learning_rate)*gradients['W2'].reshape(params['W2'].shape)
-        params['b2'] = params['b2'] - float(learning_rate)*gradients['b2'].reshape(params['b2'].shape)
+        params['W1'] = params['W1'] - float(learning_rate)*gradients['W1']
+        params['b1'] = params['b1'] - float(learning_rate)*gradients['b1']
+        params['W2'] = params['W2'] - float(learning_rate)*gradients['W2']
+        params['b2'] = params['b2'] - float(learning_rate)*gradients['b2']
     # *** END CODE HERE ***
 
     # This function does not return anything

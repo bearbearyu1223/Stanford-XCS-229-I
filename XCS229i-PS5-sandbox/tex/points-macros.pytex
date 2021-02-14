@@ -1,0 +1,43 @@
+🐍
+import json
+
+print(R"""
+\usepackage{xstring}
+\newcommand{\points}[1]{
+  \IfEqCase{#1}{""")
+# Load the points.json for that assignment
+with open(f'../points.json', 'r') as f:
+  points = json.load(f)
+# Accumulate all points by question id:
+question_values = {}
+for question in points.values():
+  q_id = question['question_id']
+  points = question['points']
+  is_written = question['is_written']
+  is_extra_credit = question['is_extra_credit']
+  if 'no_label' in question:
+    no_label = question['no_label']
+  else:
+    no_label = False
+  # All parts for the same subquestion must have the same 'is_written' and 'is_extra_credit' attributes
+  if q_id not in question_values:
+    question_values[q_id] = (points, is_written, is_extra_credit, no_label)
+  else:
+    question_values[q_id] = (question_values[q_id][0] + points, is_written, is_extra_credit, no_label)
+for question_id, (points,is_written, is_extra_credit, no_label) in question_values.items():
+  if no_label:
+    print(R'    {%s}{\textbf{[%s point%s%s]}}' % (question_id,
+                                                str(int(points)) if abs(int(points) - points) < 0.01 else '{:.2f}'.format(points),
+                                                '' if points == 1 else 's',
+                                                ' (Extra Credit)' if is_extra_credit else ''))
+  else:
+    print(R'    {%s}{\textbf{[%s point%s (%s%s)]}}' % (question_id,
+                                                         str(int(points)) if abs(int(points) - points) < 0.01 else '{:.2f}'.format(points),
+                                                         '' if points == 1 else 's',
+                                                         'Written' if is_written else 'Coding',
+                                                         ', Extra Credit' if is_extra_credit else ''))
+print(R"""
+  }[\PackageError{points}{Cannot assign point value to unknown question: #1}{}]
+}""")
+
+🐍

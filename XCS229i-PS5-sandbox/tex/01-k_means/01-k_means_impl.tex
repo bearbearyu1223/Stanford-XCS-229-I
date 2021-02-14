@@ -1,0 +1,16 @@
+\item \points{1a}
+\textbf{K-Means Compression Implementation.}
+First let us \emph{look} at our data. From the |src-k_means/| directory, open an interactive Python prompt, and type
+%
+\begin{center}
+  |from matplotlib.image import imread; import matplotlib.pyplot as plt;|
+\end{center}
+%
+and run |A = imread(`peppers-large.tiff')|. Now, |A| is a ``three dimensional matrix,'' and |A[:,:,0]|, |A[:,:,1]| and |A[:,:,2]| are 512x512 arrays that respectively contain the red, green, and blue values for each pixel. Enter |plt.imshow(A); plt.show()| to display the image.
+
+Since the large image has 262,144 pixels and would take a while to cluster, we will instead run vector quantization on a smaller image. Repeat (a) with |peppers-small.tiff|.
+
+
+Next we will implement image compression in the file |src-k_means/submission.py| which has some starter code. Treating each pixel's $(r, g, b)$ values as an element of $\Re^3$, implement K-means with 16 clusters on the pixel data from this smaller image, iterating (preferably) to convergence, but in no case for less than 30 iterations. For initialization, set each cluster centroid to the $(r, g, b)$-values of a randomly chosen pixel in the image.
+
+Take the image of |peppers-large.tiff|, and replace each pixel's $(r, g, b)$ values with the value of the closest cluster centroid from the set of centroids computed with |peppers-small.tiff|. Consider visually comparing it to the original image to verify that your implementation is reasonable.

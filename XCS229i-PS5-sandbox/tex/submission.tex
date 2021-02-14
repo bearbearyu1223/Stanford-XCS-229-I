@@ -1,0 +1,173 @@
+% This contents of this file will be inserted into the _Solutions version of the
+% output tex document.  Here's an example:
+
+% If assignment with subquestion (1.a) requires a written response, you will
+% find the following flag within this document: <SCPD_SUBMISSION_TAG>_1a
+% In this example, you would insert the LaTeX for your solution to (1.a) between
+% the <SCPD_SUBMISSION_TAG>_1a flags.  If you also constrain your answer between the
+% START_CODE_HERE and END_CODE_HERE flags, your LaTeX will be styled as a
+% solution within the final document.
+
+% Please do not use the '<SCPD_SUBMISSION_TAG>' character anywhere within your code.  As expected,
+% that will confuse the regular expressions we use to identify your solution.
+\def\assignmentnum{5 }
+\def\assignmenttitle{XCS229i Problem Set \assignmentnum}
+\input{macros}
+\begin{document}
+\pagestyle{myheadings} \markboth{}{\assignmenttitle}
+
+% <SCPD_SUBMISSION_TAG>_entire_submission
+
+This handout includes space for every question that requires a written response.
+Please feel free to use it to handwrite your solutions (legibly, please).  If
+you choose to typeset your solutions, the |README.md| for this assignment includes
+instructions to regenerate this handout with your typeset \LaTeX{} solutions.
+\ruleskip
+
+\LARGE
+1.b
+\normalsize
+
+% <SCPD_SUBMISSION_TAG>_1b
+  \begin{answer}
+  % ### START CODE HERE ###
+  % ### END CODE HERE ###
+  \end{answer}
+% <SCPD_SUBMISSION_TAG>_1b
+\clearpage
+
+\LARGE
+2.a
+\normalsize
+
+% <SCPD_SUBMISSION_TAG>_2a
+  \begin{answer}
+    \begin{align*}
+      \ell(\theta^{(t+1)})
+      &= \alpha \ell_\text{sup}(\theta^{(t+1)}) + \ell_\text{unsup}(\theta^{(t+1)})
+          &\text{Definition} \\
+      &\ge \alpha \ell_\text{sup}(\theta^{(t+1)}) + \sum_{i=1}^\nexp\sum_{\zsi}Q_i^{(t)}(\zsi)\log\frac{p(\xsi,\zsi;\theta^{(t+1)})}{Q_i^{(t)}(\zsi)}
+          &\text{Jensen's inequality} \\
+      &\ge \\
+      % ### START CODE HERE ###
+      % ### END CODE HERE ###
+    \end{align*}
+  \end{answer}
+% <SCPD_SUBMISSION_TAG>_2a
+\clearpage
+
+\LARGE
+2.b
+\normalsize
+
+% <SCPD_SUBMISSION_TAG>_2b
+  \begin{answer}
+  % ### START CODE HERE ###
+  % ### END CODE HERE ###
+  \end{answer}
+% <SCPD_SUBMISSION_TAG>_2b
+\clearpage
+
+\LARGE
+2.c
+\normalsize
+
+% <SCPD_SUBMISSION_TAG>_2c
+  \begin{answer}
+    List the parameters which need to be re-estimated in the M-step:\\\\\\
+
+    \allowdisplaybreaks
+
+    In order to simplify derivation, it is useful to denote $$w_j^{(i)} = Q^{(t)}_i(\zsi=j),$$ and $$\tilde{w}_j^{(i)} = \begin{cases} \alpha & \tilde{z}^{(i)} = j \\ 0 & \text{ otherwise.} \end{cases}$$
+
+    We further denote $S = \Sigma^{-1}$, and note that because of chain rule of calculus, $\nabla_S\ell = 0 \Rightarrow \nabla_\Sigma \ell = 0$. So we choose to rewrite the M-step in terms of $S$ and maximize it w.r.t $S$, and re-express the resulting solution back in terms of $\Sigma$.
+
+    Based on this, the M-step becomes:
+    \begin{align*}
+    \phi^{(t+1)}, \mu^{(t+1)}, S^{(t+1)} &=  \arg\max_{\phi,\mu,S} \sum_{i=1}^\nexp \sum_{j=1}^k Q_i^{(t)}(\zsi) \log \frac{p(\xsi,\zsi;\phi,\mu,S)}{Q_i^{(t)}(\zsi)} + \sum_{i=1}^{\tilde{\nexp}} \log p(\tilde{\xsi}, \tilde{\zsi}; \phi, \mu, S)\\
+    &=\\
+    % ### START CODE HERE ###
+    % ### END CODE HERE ###
+    \end{align*}
+
+    Now, calculate the update steps by maximizing the expression within the argmax for each parameter (We will do the first for you).
+
+    ${\mathbf \phi_j}$: We construct the Lagrangian including the constraint that $\sum_{j=1}^k \phi_j = 1$, and absorbing all irrelevant terms into constant $C$:
+    \begin{align*}
+    \mathcal{L}(\phi, \beta) &= C + \sum_{i=1}^\nexp\sum_{j=1}^k w^{(i)}_j \log \phi_j + \sum_{i=1}^{\tilde{\nexp}}\sum_{j=1}^k \tilde{w}^{(i)}_j \log \phi_j + \beta\left(\sum_{j=1}^k \phi_j - 1\right) \\
+    \nabla_{\phi_j}\mathcal{L}(\phi, \beta) &=  \sum_{i=1}^\nexp w^{(i)}_j\frac{1}{\phi_j} + \sum_{i=1}^{\tilde{\nexp}} \tilde{w}^{(i)}_j\frac{1}{\phi_j} + \beta = 0 \\
+    &\Rightarrow \phi_j = \frac{\sum_{i=1}^\nexp w^{(i)}_j + \sum_{i=1}^{\tilde{\nexp}} \tilde{w}^{(i)}_j}{-\beta} \\
+    \nabla_\beta\mathcal{L}(\phi,\beta) &= \sum_{j=1}^k \phi_j -1 = 0 \\
+    &\Rightarrow \sum_{j=1}^k \frac{\sum_{i=1}^\nexp w^{(i)}_j + \sum_{i=1}^{\tilde{\nexp}} \tilde{w}^{(i)}_j}{-\beta} = 1 \\
+    &\Rightarrow -\beta = \sum_{j=1}^k \left(\sum_{i=1}^\nexp w^{(i)}_j + \sum_{i=1}^{\tilde{\nexp}} \tilde{w}^{(i)}_j\right)  \\
+    \Rightarrow \phi_j^{(t+1)} &= \frac{ \sum_{i=1}^\nexp w_j^{(i)} + \sum_{i=1}^{\tilde{\nexp}}\tilde{w}_j^{(i)}} { \sum_{j=1}^k \left(\sum_{i=1}^\nexp w^{(i)}_j + \sum_{i=1}^{\tilde{\nexp}} \tilde{w}^{(i)}_j\right) } \\
+    &= \frac{ \sum_{i=1}^\nexp w_j^{(i)} + \sum_{i=1}^{\tilde{\nexp}}\tilde{w}_j^{(i)}} { \nexp + \alpha \tilde{\nexp}}
+    \end{align*}
+
+    ${\mathbf \mu_j}$: Next, derive the update for $\mu_j$.  Do this by maximizing the expression with the argmax above with respect to $\mu_j$.\\
+
+    First, calculate the gradient with respect to $\mu_j$:
+
+    \begin{flalign*}
+    \nabla_{\mu_j} &=
+    % ### START CODE HERE ###
+    % ### END CODE HERE ###
+    \end{flalign*}
+
+    Next, set the gradient to zero and solve for $\mu_j$:
+
+    \begin{align*}
+    0 &= \\
+    % ### START CODE HERE ###
+    % ### END CODE HERE ###
+    \end{align*}
+
+    ${\mathbf \Sigma_j}$: Finally, derive the update for $\Sigma_j$ via $S_j$.  Again, Do this by maximizing the expression with the argmax above with respect to $S_j$.\\.
+
+    First, calculate the gradient with respect to $S_j$:
+
+    \begin{flalign*}
+    \nabla_{S_j} &= 
+    % ### START CODE HERE ###
+    % ### END CODE HERE ###
+    \end{flalign*}
+
+    Next, set the gradient to zero and solve for $S_j$:
+
+    \begin{align*}
+    0 &= \\
+    % ### START CODE HERE ###
+    % ### END CODE HERE ###
+    \end{align*}
+
+    This results in the final set of update expressions:
+    \begin{align*}
+      \phi_j & := \\
+      % ### START CODE HERE ###
+      % ### END CODE HERE ###
+      \mu_j & :=  \\
+      % ### START CODE HERE ###
+      % ### END CODE HERE ###
+      \Sigma_j & :=  \\
+      % ### START CODE HERE ###
+      % ### END CODE HERE ###
+    \end{align*}
+  \end{answer}
+% <SCPD_SUBMISSION_TAG>_2c
+\clearpage
+
+\LARGE
+2.f
+\normalsize
+
+% <SCPD_SUBMISSION_TAG>_2f
+  \begin{answer}
+    % ### START CODE HERE ###
+    % ### END CODE HERE ###
+  \end{answer}
+% <SCPD_SUBMISSION_TAG>_2f
+\clearpage
+
+% <SCPD_SUBMISSION_TAG>_entire_submission
+
+\end{document}

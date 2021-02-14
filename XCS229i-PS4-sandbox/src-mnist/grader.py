@@ -90,11 +90,14 @@ class Test_2aii(GradedTestCase):
 
     params = solution_get_initial_params(input_size=dim, num_hidden=num_hidden, num_output=10)
 
-    h_student, y_student, cost_student = submission.forward_prop(data=self.train_data[:1000, :],
-                                                              labels=self.train_labels[:1000, :], params=params)
-    h_solution, y_solution, cost_solution = solution_forward_prop(data=self.train_data[:1000, :],
-                                                                  labels=self.train_labels[:1000, :],
+    test_samples = np.random.randint(self.train_data.shape[0], size = 1000)
+
+    h_student, y_student, cost_student = submission.forward_prop(data=self.train_data[test_samples, :],
+                                                                 labels=self.train_labels[test_samples, :], params=params)
+    h_solution, y_solution, cost_solution = solution_forward_prop(data=self.train_data[test_samples, :],
+                                                                  labels=self.train_labels[test_samples, :],
                                                                   params=params)
+
 
     result_match = all([np.allclose(h_student, h_solution, atol=0, rtol=0.10),
                         np.allclose(y_student, y_solution, atol=0, rtol=0.10),
@@ -114,9 +117,9 @@ class Test_2aii(GradedTestCase):
 
     params = solution_get_initial_params(input_size=dim, num_hidden=num_hidden, num_output=10)
     student_grad = submission.backward_prop(data=self.train_data, labels=self.train_labels, params=params,
-                                         forward_prop_func=solution_forward_prop)
+                                            forward_prop_func=solution_forward_prop)
     solution_grad = solution_backward_prop(data=self.train_data, labels=self.train_labels, params=params,
-                                             forward_prop_func=solution_forward_prop)
+                                           forward_prop_func=solution_forward_prop)
 
     results_match = True
     if not np.allclose(student_grad['W1'], solution_grad['W1'], atol=0, rtol=0.20):
@@ -153,13 +156,13 @@ class Test_2aii(GradedTestCase):
 
     # updates params
     submission.gradient_descent_epoch(self.train_data, self.train_labels, learning_rate=0.01, batch_size=5,
-                                   params=student_params,
-                                   forward_prop_func=solution_forward_prop,
-                                   backward_prop_func=solution_backward_prop)
+                                      params=student_params,
+                                      forward_prop_func=solution_forward_prop,
+                                      backward_prop_func=solution_backward_prop)
     solution_gradient_descent_epoch(self.train_data, self.train_labels, learning_rate=0.01, batch_size=5,
-                                   params=solution_params,
-                                   forward_prop_func=solution_forward_prop,
-                                   backward_prop_func=solution_backward_prop)
+                                    params=solution_params,
+                                    forward_prop_func=solution_forward_prop,
+                                    backward_prop_func=solution_backward_prop)
 
     results_match = True
     if not np.allclose(student_params['W1'], solution_params['W1'], atol=0, rtol=0.20):
@@ -185,7 +188,7 @@ class Test_2aii(GradedTestCase):
     """2aii-6-basic: Train the model and plot the results (not regularized)"""
     # Change this to "skip = False" to train the model.
     # This is turned off by default to make the autograder faster.
-    skip = False
+    skip = True
     if not skip:
       submission.main(train_baseline=True, train_regularized=False)
     self.assertTrue(True)
@@ -208,7 +211,7 @@ class Test_2b(GradedTestCase):
 
     params = submission.get_initial_params(input_size=dim, num_hidden=num_hidden, num_output=10)
     student_grad = submission.backward_prop_regularized(data=self.train_data, labels=self.train_labels, params=params,
-                                                     forward_prop_func=solution_forward_prop, reg=0.0001)
+                                                        forward_prop_func=solution_forward_prop, reg=0.0001)
     solution_grad = solution_backward_prop_regularized(data=self.train_data, labels=self.train_labels, params=params,
                                                        forward_prop_func=solution_forward_prop, reg=0.0001)
     results_match = True
@@ -230,7 +233,7 @@ class Test_2b(GradedTestCase):
 
     self.assertTrue(results_match)
 
-  @graded(is_hidden=True)
+  @graded(is_hidden=True, timeout=30)
   def test_1(self):
     """2b-1-hidden: nn (`gradient_descent_epoch` with regularization)"""
     solution_backward_prop_regularized = self.run_with_solution_if_possible(submission, lambda sub_or_sol:sub_or_sol.backward_prop_regularized)
@@ -245,12 +248,12 @@ class Test_2b(GradedTestCase):
 
     # updates params
     submission.gradient_descent_epoch(self.train_data, self.train_labels, learning_rate=0.01, batch_size=5,
-                                   params=student_params,
-                                   forward_prop_func=solution_forward_prop,
-                                   backward_prop_func=lambda a, b, c, d: submission.backward_prop_regularized(a, b,
-                                                                                                           c,
-                                                                                                           d,
-                                                                                                           reg=0.0001))
+                                      params=student_params,
+                                      forward_prop_func=solution_forward_prop,
+                                      backward_prop_func=lambda a, b, c, d: submission.backward_prop_regularized(a, b,
+                                                                                                                 c,
+                                                                                                                 d,
+                                                                                                                 reg=0.0001))
     solution_gradient_descent_epoch(self.train_data, self.train_labels, learning_rate=0.01, batch_size=5,
                                     params=solution_params,
                                     forward_prop_func=solution_forward_prop,
@@ -260,19 +263,19 @@ class Test_2b(GradedTestCase):
                                                                                                              d,
                                                                                                              reg=0.0001))
     results_match = True
-    if not np.allclose(student_params['W1'], solution_params['W1'], atol=0, rtol=0.20):
+    if not np.allclose(student_params['W1'], solution_params['W1'], rtol=1, atol=2):
       print('W1 weight did not match expected result')
       results_match = False
 
-    if not np.allclose(student_params['b1'], solution_params['b1'], atol=0, rtol=0.20):
+    if not np.allclose(student_params['b1'], solution_params['b1'], rtol=1, atol=2):
       print('b1 bias did not match expected result')
       results_match = False
 
-    if not np.allclose(student_params['W2'], solution_params['W2'], atol=0, rtol=0.20):
+    if not np.allclose(student_params['W2'], solution_params['W2'], rtol=1, atol=2):
       print('W2 weight did not match expected result')
       results_match = False
 
-    if not np.allclose(student_params['b2'], solution_params['b2'], atol=0, rtol=0.20):
+    if not np.allclose(student_params['b2'], solution_params['b2'], rtol=1, atol=2):
       print('b2 bias did not match expected result')
       results_match = False
 
@@ -283,7 +286,7 @@ class Test_2b(GradedTestCase):
     """2b-2-basic: Train the model and plot the results (regularized)"""
     # Change this to "skip = False" to train the model.
     # This is turned off by default to make the autograder faster.
-    skip = False
+    skip = True
     if not skip:
       submission.main(train_baseline=False, train_regularized=True)
     self.assertTrue(True)
@@ -359,7 +362,7 @@ class Test_2c(GradedTestCase):
     """2c-1-basic: Train the model and plot the results (both regularized and not regularized), comparing with test set."""
     # Change this to "skip = False" to train the model.
     # This is turned off by default to make the autograder faster.
-    skip = False
+    skip = True
     if not skip:
       submission.main(train_baseline=True, train_regularized=True, test_set = True)
     self.assertTrue(True)
