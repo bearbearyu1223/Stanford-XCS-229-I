@@ -89,7 +89,7 @@ class Test_2d(GradedTestCase):
   @graded(timeout=600)
   def test_1(self):
     """2d-1-basic:  Create plots to verify the EM implementation"""
-    skip = True
+    skip = False
     if not skip:
       np.random.seed(229)
       # Run 3 trials to see how different initializations
@@ -140,7 +140,7 @@ class Test_2e(GradedTestCase):
   @graded(timeout=600)
   def test_1(self):
     """2e-1-basic:  Create plots to verify the semi-supervised EM implementation"""
-    skip = True
+    skip = False
     if not skip:
       np.random.seed(229)
       # Run 3 trials to see how different initializations

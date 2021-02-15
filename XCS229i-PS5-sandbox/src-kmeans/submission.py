@@ -58,9 +58,9 @@ def update_centroids(centroids, image, max_iter=30, print_every=10):
     # *** START YOUR CODE ***
     new_centroids = centroids.copy()
     num_clusters = centroids.shape[0]
-    for iteration in range(max_iter):
-        assigned = np.empty([image.shape[0], image.shape[1], 2])
-        assigned[:] = 1e+10
+    iteration = 0
+    while iteration < max_iter:
+        assigned = 1e+6 * np.ones([image.shape[0], image.shape[1], 2])
         for c, centroid in enumerate(new_centroids):
             dist = np.linalg.norm((image - centroid), ord=2, axis=2)
             condition = np.where(assigned[:, :, 0] > dist)
@@ -76,6 +76,7 @@ def update_centroids(centroids, image, max_iter=30, print_every=10):
         error = np.linalg.norm(centroids-new_centroids, ord=1, axis=1).sum()/float(num_clusters)
         if (iteration + 1) % print_every == 0:
             print("Iteration : {}, error : {}".format(iteration + 1, error))
+        iteration = iteration + 1
     # *** END YOUR CODE ***
 
     return new_centroids
@@ -100,14 +101,14 @@ def update_image(image, centroids):
     """
 
     # *** START YOUR CODE ***
-    closest_centroids = np.empty([image.shape[0], image.shape[1]])
-    closest_centroids[:] = 1e+10
+    closest = 1e+6 * np.ones([image.shape[0], image.shape[1]])
+    closest_centroid = image.copy()
     for centroid in centroids:
-        dist = np.linalg.norm(image-centroid, ord=2, axis=2)
-        condition = np.where(closest_centroids > dist)
-        closest_centroids[condition] = dist[condition]
-        image[condition] = centroid
-    # *** END YOUR CODE ***
+        dist = np.linalg.norm((image - centroid), ord=2, axis=2)
+        condition = np.where(closest > dist)
+        closest[condition] = dist[condition]
+        closest_centroid[condition] = centroid
+    image = closest_centroid
     return image
 
 

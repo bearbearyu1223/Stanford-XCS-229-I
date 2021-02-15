@@ -24,6 +24,20 @@ def main(is_semi_supervised, trial_num):
     x = x_all[~labeled_idxs, :]        # Unlabeled examples
 
     # *** START CODE HERE ***
+    n = x.shape[0]
+    # initialize w, phi, mu and sigma
+    mu = list()
+    sigma = list()
+
+    # Split x into K groups
+    x_splits = np.array_split(x, K)
+    phi = float(1/K) * np.ones(K)
+    w = float(1/K) * np.ones(shape=[n, K])
+    for k in range(K):
+        mean = np.mean(x_splits[k], axis=0)
+        covar = np.cov(x_splits[k].transpose())
+        mu.append(mean)
+        sigma.append(covar)
     # *** END CODE HERE ***
 
     if is_semi_supervised:
@@ -67,6 +81,22 @@ def run_em(x, w, phi, mu, sigma, max_iter=1000):
     while it < max_iter and (prev_ll is None or np.abs(ll - prev_ll) >= eps):
         pass  # Just a placeholder for the starter code
         # *** START CODE HERE
+        if ll is not None:
+            prev_ll = ll
+        n = x.shape[0]
+        # E-Step: calculate w and log-likelihood
+        w, ll = calculate_w_and_ll(x, w, mu, sigma, phi)
+
+        # M-Step: update phi, mu, amd sigma
+        for k in range(K):
+            sum_w_k = w[:, k].sum()
+            phi[k] = np.true_divide(sum_w_k, float(n))
+            mu[k] = np.true_divide(np.dot(w[:, k], x), sum_w_k)
+            sigma[k] = 0.0
+            for i in range(n):
+                x_mu = np.reshape(x[i] - mu[k], (mu[k].shape[0], 1))
+                sigma[k] = sigma[k] + w[i, k]*np.dot(x_mu, x_mu.T)/sum_w_k
+        it = it + 1
         # *** END CODE HERE ***
 
     return w
@@ -102,12 +132,61 @@ def run_semi_supervised_em(x, x_tilde, z_tilde, w, phi, mu, sigma, max_iter=1000
     while it < max_iter and (prev_ll is None or np.abs(ll - prev_ll) >= eps):
         pass  # Just a placeholder for the starter code
         # *** START CODE HERE ***
+        if ll is not None:
+            prev_ll = ll
+        n = x.shape[0]
+
+        # E-Step: calculate w and log-likelihood for unsupervised EM
+        w, ll = calculate_w_and_ll(x, w, mu, sigma, phi)
+
+        # E-Step: add log-likelihood for supervised EM
+        for k in range(K):
+            x_tilde_labelled = [y for x, y in zip(z_tilde == k, x_tilde) if x == True]
+            x_tilde_labelled = np.array(x_tilde_labelled)
+            for i in range(x_tilde_labelled.shape[0]):
+                likelihood = np.exp(-0.5*(np.dot(np.dot((x_tilde_labelled[i] - mu[k]).T, np.linalg.pinv(sigma[k])), x_tilde_labelled[i] - mu[k])))
+                likelihood = np.true_divide(likelihood, np.power(2.0*np.pi, x_tilde_labelled.shape[1]/2)*np.power(np.linalg.det(sigma[k]), 0.5)).flatten()
+                ll = ll + alpha*np.log(phi[k]*likelihood)
+
+        # M-Step: update phi, mu, amd sigma for semi-supervised EM
+        n_tilde = x_tilde.shape[0]
+        for k in range(K):
+            sum_w_tilde_k = alpha*np.sum(z_tilde == k)
+            sum_w_k = w[:, k].sum()
+            x_tilde_labelled = np.array([y for x, y in zip(z_tilde == k, x_tilde) if x == True])
+            phi[k] = np.true_divide(sum_w_k + sum_w_tilde_k, n + alpha*n_tilde)
+            mu[k] = np.true_divide(np.dot(w[:, k], x) + alpha*x_tilde_labelled.sum(axis=0), sum_w_k + sum_w_tilde_k)
+
+            temp = 0.0
+            for i in range(n):
+                x_mu = np.reshape(x[i] - mu[k], (mu[k].shape[0], 1))
+                temp = temp + w[i, k]*np.dot(x_mu, x_mu.T)
+
+            for i in range(x_tilde_labelled.shape[0]):
+                x_mu = np.reshape(x_tilde_labelled[i] - mu[k], (mu[k].shape[0], 1))
+                temp = temp + alpha*np.dot(x_mu, x_mu.T)
+
+            sigma[k] = np.true_divide(temp, sum_w_k + sum_w_tilde_k)
+        it = it + 1
         # *** END CODE HERE ***
 
     return w
 
 
 # *** START CODE HERE ***
+def calculate_w_and_ll(x, w, mu, sigma, phi):
+    ll = 0
+    n = x.shape[0]
+    d = x.shape[1]
+    for k in range(K):
+        for i in range(n):
+            numerator = np.exp(-0.5*(np.dot(np.dot((x[i] - mu[k]).T, np.linalg.inv(sigma[k])), (x[i] - mu[k]))))
+            denominator = np.power(2.0*np.pi, 0.5*d)*np.power(np.linalg.det(sigma[k]), 0.5)
+            p_x_z = np.true_divide(numerator, denominator)
+            w[i, k] = (phi[k] * p_x_z).clip(min=1e-6)
+            ll = ll + np.log(w[i, k])
+    w = w/np.sum(w, axis=1, keepdims=True)
+    return w, ll
 # *** END CODE HERE ***
 
 
